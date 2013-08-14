@@ -1,0 +1,13 @@
+*.swp
+*.dSYM
+*.pyc
+*.log
+*.sqlite
+.installed.cfg
+*.egg-info
+build
+*.bdb
+.DS_Store
+docs/html/
+docs/doctrees/
+.tox

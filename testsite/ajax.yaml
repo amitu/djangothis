@@ -1,0 +1,4 @@
+/idxw:
+    message: "hello ajax"
+/idxw?asd=foo:
+    afoo: 1
