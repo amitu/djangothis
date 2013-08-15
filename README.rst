@@ -6,7 +6,7 @@ primarily for prototyping.
 
 Lets say the current folder contains a bunch of html file, this utility runs a
 django server, and makes the files available through it. The html files can use
-django's powerfull template inheritance.
+django's powerful template inheritance.
 
 If there is a folder named static in current folder, that content of that
 folder will also become available on /static/ url.
