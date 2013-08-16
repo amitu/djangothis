@@ -25,7 +25,7 @@ setup(
     url = 'http://amitu.com/djangothis/',
     license = 'BSD',
 
-    install_requires = ["importd>=0.2.1", "PyYAML"],
+    install_requires = ["importd>=0.2.3", "PyYAML"],
     packages = ["djangothis"],
 
     zip_safe = False,

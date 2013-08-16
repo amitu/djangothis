@@ -11,3 +11,5 @@ build
 docs/html/
 docs/doctrees/
 .tox
+dist
+t

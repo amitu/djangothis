@@ -6,7 +6,7 @@ except ImportError:
 
 from importd import d
 
-__version__ = '0.1'
+__version__ = '0.2'
 
 def dotslash(pth):
     return os.path.join(os.getcwd(), pth)
