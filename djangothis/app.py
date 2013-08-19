@@ -6,19 +6,29 @@ except ImportError:
 
 from importd import d
 
-__version__ = '0.2'
+__version__ = '0.3'
 
 def dotslash(pth):
+    # TODO: support directory from command line?
     return os.path.join(os.getcwd(), pth)
 
 sys.path.append(os.getcwd())
 
-d(
+defaults = dict(
     DEBUG=True,
-    TEMPLATE_DIRS=[os.getcwd()],
-    STATICFILES_DIRS=[dotslash("static")],
+    TEMPLATE_DIRS=[dotslash("_theme"), dotslash(".")],
+    STATICFILES_DIRS=[dotslash("static"), dotslash("_theme")],
     INSTALLED_APPS=["djangothis"],
 )
+
+try:
+    config = yaml.load(file(dotslash("config.yaml")), Loader=Loader)
+except Exception:
+    pass
+else:
+    if config: defaults.update(config)
+
+d(**defaults)
 
 try:
     import views
@@ -46,6 +56,9 @@ def handle(request):
 
     if path.startswith("static"):
         return serve(request, request.path[len("/static/"):])
+
+    if path.startswith("theme"):
+        return serve(request, request.path[len("/theme/"):])
 
     if path == "" or path.endswith("/"):
         path = path + "index.html"
