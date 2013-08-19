@@ -19,9 +19,8 @@ Static files
 ------------
 
 If there is a folder named static in current folder, that content of that
-folder will also become available on /static/ url.
-
-This utility maps request to /favicon.ico to /static/favicon.ico.
+folder will also become available on /static/ url. This utility maps request to
+/favicon.ico to /static/favicon.ico.
 
 views.py and forms.py
 ---------------------
