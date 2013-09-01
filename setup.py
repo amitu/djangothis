@@ -13,9 +13,11 @@ def find_version(*file_paths):
         return version_match.group(1)
     raise RuntimeError("Unable to find version string.")
 
+descr = "Serve static files and django templates in current folder."
+
 setup(
     name = "djangothis",
-    description = "Serve static files and django templates in current folder, for prototyping",
+    description = descr,
     long_description=read("README.rst"),
 
     version = find_version("djangothis/app.py"),

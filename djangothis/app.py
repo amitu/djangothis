@@ -1,4 +1,5 @@
-import os, sys, yaml
+import os, sys, yaml, importlib
+from path import path
 try:
     from yaml import CLoader as Loader
 except ImportError:
@@ -6,7 +7,7 @@ except ImportError:
 
 from importd import d
 
-__version__ = '0.3'
+__version__ = '0.4'
 
 def dotslash(pth):
     # TODO: support directory from command line?
@@ -19,16 +20,36 @@ defaults = dict(
     TEMPLATE_DIRS=[dotslash("_theme"), dotslash(".")],
     STATICFILES_DIRS=[dotslash("static"), dotslash("_theme")],
     INSTALLED_APPS=["djangothis"],
+    TEMPLATE_CONTEXT_PROCESSORS=[
+        "django.core.context_processors.request",
+        "django.contrib.auth.context_processors.auth",
+        "djangothis.app.context",
+    ],
 )
 
-try:
-    config = yaml.load(file(dotslash("config.yaml")), Loader=Loader)
-except Exception:
-    pass
-else:
-    if config: defaults.update(config)
+def read_yaml_file(pth):
+    try:
+        return read_yaml(file(pth))
+    except Exception:
+        return {}
+
+def read_yaml(pth):
+    try:
+        return yaml.load(pth, Loader=Loader)
+    except Exception:
+        return {}
+
+defaults.update(read_yaml_file(dotslash("config.yaml")))
 
 d(**defaults)
+
+from django.template.loader import add_to_builtins
+from django.core.management import get_commands
+
+def context(request):
+    return {
+        "settings": d.settings
+    }
 
 try:
     import views
@@ -43,6 +64,66 @@ except ImportError:
     pass
 else:
     forms
+
+COMMANDS = get_commands()
+
+ttags = path(dotslash("templatetags"))
+if ttags.exists():
+    for m in ttags.walkfiles():
+        if m.namebase.startswith("__"): continue
+        if m.endswith(".py"):
+            add_to_builtins("templatetags.%s" % m.namebase)
+
+cmds = path(dotslash("cmds"))
+if cmds.exists():
+    for m in cmds.walkfiles():
+        if m.namebase.startswith("__"): continue
+        if m.endswith(".py"):
+            try:
+                cmd = importlib.import_module("cmds.%s" % m.namebase)
+            except ImportError:
+                pass
+            else:
+                sys.modules[
+                    str("djangothis.management.commands.%s" % m.namebase)
+                ] = cmd
+                COMMANDS[m.namebase] = "djangothis" # i <3 magic!
+
+try:
+    import _theme.views
+except ImportError:
+    pass
+else:
+    views
+
+try:
+    import _theme.forms
+except ImportError:
+    pass
+else:
+    forms
+
+theme_ttags = path(dotslash("_theme/templatetags"))
+if theme_ttags.exists():
+    for m in theme_ttags.walkfiles():
+        if m.namebase.startswith("__"): continue
+        if m.endswith(".py"):
+            add_to_builtins("_theme.templatetags.%s" % m.namebase)
+
+theme_cmds = path(dotslash("_theme/cmds"))
+if theme_cmds.exists():
+    for m in theme_cmds.walkfiles():
+        if m.namebase.startswith("__"): continue
+        if m.endswith(".py"):
+            try:
+                cmd = importlib.import_module("_theme.cmds.%s" % m.namebase)
+            except ImportError:
+                pass
+            else:
+                sys.modules[
+                    str("djangothis.management.commands.%s" % m.namebase)
+                ] = cmd
+                COMMANDS[m.namebase] = "djangothis" # i <3 magic!
 
 from django.contrib.staticfiles.views import serve
 from fhurl import JSONResponse
@@ -66,26 +147,23 @@ def handle(request):
     if os.path.exists(dotslash(path)) and os.path.isfile(dotslash(path)):
         return path
 
-    try:
-        ajax = yaml.load(file(dotslash("ajax.yaml")), Loader=Loader)
-    except Exception:
-        pass
-    else:
-        if ajax:
-            if request.GET:
-                path = request.path + "?" + request.META["QUERY_STRING"]
-                # TODO: make it immune to order of GET params
-                if path in ajax:
-                    return JSONResponse(ajax[path])
-            if request.path in ajax:
-                return JSONResponse(ajax[request.path])
+    ajax = read_yaml_file(dotslash("ajax.yaml"))
+
+    if ajax:
+        if request.GET:
+            path = request.path + "?" + request.META["QUERY_STRING"]
+            # TODO: make it immune to order of GET params
+            if path in ajax:
+                return JSONResponse(ajax[path])
+        if request.path in ajax:
+            return JSONResponse(ajax[request.path])
 
     if not request.path.endswith("/"):
         return d.HttpResponseRedirect(request.path + "/")
 
     raise d.Http404("File not found.")
 
-# TODO:
+# TODO?:
 #
 #   this is for prototype only
 #
@@ -96,6 +174,8 @@ def handle(request):
 #
 #   there should be a command djangothis --app[=app] that creates appropriate
 #   app.py in the current folder (if it does not exists, complains if it does)
+#
+#   Naah, don't think so.
 
 if __name__ == "__main__":
     d.main()
