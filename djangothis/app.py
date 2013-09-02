@@ -1,13 +1,32 @@
 import os, sys, yaml, importlib
-from path import path
 try:
     from yaml import CLoader as Loader
 except ImportError:
     from yaml import Loader
 
-from importd import d
+__version__ = '0.5'
 
-__version__ = '0.4'
+class FakeModuleHack:
+    def __init__(self, f):
+        self.__file__ = f
+
+def watchfile(pth):
+    sys.modules["djangothis::%s" % pth] = FakeModuleHack(pth)
+
+def read_yaml_file(pth):
+    try:
+        return read_yaml(file(pth))
+    except Exception:
+        return {}
+
+def read_yaml(pth):
+    try:
+        return yaml.load(pth, Loader=Loader)
+    except Exception, e:
+        return {}
+
+from path import path
+from importd import d
 
 def dotslash(pth):
     # TODO: support directory from command line?
@@ -26,18 +45,6 @@ defaults = dict(
         "djangothis.app.context",
     ],
 )
-
-def read_yaml_file(pth):
-    try:
-        return read_yaml(file(pth))
-    except Exception:
-        return {}
-
-def read_yaml(pth):
-    try:
-        return yaml.load(pth, Loader=Loader)
-    except Exception:
-        return {}
 
 defaults.update(read_yaml_file(dotslash("config.yaml")))
 
@@ -66,6 +73,8 @@ else:
     forms
 
 COMMANDS = get_commands()
+watchfile(dotslash("config.yaml"))
+watchfile(dotslash("ajax.yaml"))
 
 ttags = path(dotslash("templatetags"))
 if ttags.exists():
@@ -94,14 +103,14 @@ try:
 except ImportError:
     pass
 else:
-    views
+    _theme.views
 
 try:
     import _theme.forms
 except ImportError:
     pass
 else:
-    forms
+    _theme.forms
 
 theme_ttags = path(dotslash("_theme/templatetags"))
 if theme_ttags.exists():

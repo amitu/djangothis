@@ -80,6 +80,13 @@ If needed a theme can contain cmds folder, views.py and forms.py which will be
 included. For this feature to work the _theme folder needs to also contain
 __init__.py.
 
+Auto Reload
+-----------
+
+The debug server reloads itself when config.yaml or ajax.yaml file is updated.
+Further any theme can call djangothis.watchfile(file_path) to watch a file
+for modifications, so that debug server can be reloaded.
+
 Using djangothis as a static site generator
 -------------------------------------------
 

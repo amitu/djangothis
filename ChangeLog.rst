@@ -1,6 +1,12 @@
 djangothis ChangeLog
 ====================
 
+0.5 - 1-Sept-2013
+-----------------
+
+ * release 0.4 was buggy
+ * added arbitrary file watching support for autoreload
+
 0.4 - 1-Sept-2013
 -----------------
 
