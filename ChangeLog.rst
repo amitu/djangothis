@@ -1,6 +1,11 @@
 djangothis ChangeLog
 ====================
 
+master
+------
+
+ * $ djangothis gunicorn # launches gunicorn
+
 0.5 - 1-Sept-2013
 -----------------
 
