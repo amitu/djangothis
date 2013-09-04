@@ -50,6 +50,13 @@ Also if there is a ajax.yaml file in current folder, this utility will look for
 request the requested path in the yaml file, and if it exists, appropriate JSON
 will be returned.
 
+Custom Tag Libraries
+--------------------
+
+A folder named templatetags in current folder can be created with __init__.py
+and django template tag libraries, and djangothis will make them available to
+your templates.
+
 Custom Commands
 ---------------
 
@@ -73,12 +80,12 @@ css file _theme/style.css, it can be accessed via /theme/style.css.
 
 With these two features themes can be distributed as self contained folder.
 
-Commands, Views and Forms in Themes
------------------------------------
+Commands, Views, Custom TemplateTags and Forms in Themes
+--------------------------------------------------------
 
-If needed a theme can contain cmds folder, views.py and forms.py which will be
-included. For this feature to work the _theme folder needs to also contain
-__init__.py.
+If needed a theme can contain cmds folder, templatetags folder, views.py and
+forms.py which will be included. For this feature to work the _theme folder
+needs to also contain __init__.py.
 
 Auto Reload
 -----------
