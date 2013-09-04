@@ -4,7 +4,7 @@ try:
 except ImportError:
     from yaml import Loader
 
-__version__ = '0.5'
+__version__ = '0.6'
 
 class FakeModuleHack:
     def __init__(self, f):
@@ -52,6 +52,8 @@ d(**defaults)
 
 from django.template.loader import add_to_builtins
 from django.core.management import get_commands
+
+add_to_builtins("djangothis.templatetags.raw")
 
 def context(request):
     return {
@@ -141,7 +143,7 @@ from fhurl import JSONResponse
 def handle(request):
     path = request.path[1:]
 
-    if path == "favicon.ico":
+    if path == "favicon.ico" or path.endswith(".png"):
         return serve(request, path)
 
     if path.startswith("static"):

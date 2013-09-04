@@ -1,10 +1,12 @@
 djangothis ChangeLog
 ====================
 
-master
-------
+0.6 - 4-Sept-2013
+-----------------
 
  * $ djangothis gunicorn # launches gunicorn
+ * raw template tag
+ * .png files on / are served from static folder
 
 0.5 - 1-Sept-2013
 -----------------
