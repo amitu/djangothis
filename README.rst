@@ -81,7 +81,7 @@ css file _theme/style.css, it can be accessed via /theme/style.css.
 With these two features themes can be distributed as self contained folder.
 
 Commands, Views, Custom TemplateTags and Forms in Themes
---------------------------------------------------------
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 If needed a theme can contain cmds folder, templatetags folder, views.py and
 forms.py which will be included. For this feature to work the _theme folder
