@@ -9,7 +9,7 @@ django server, and makes the files available through it. The html files can use
 django's powerful template inheritance.
 
 Read: [djanogthis for
-blogging]http://amitu.com/2013/09/djangothis-for-blogging/).
+blogging](http://amitu.com/2013/09/djangothis-for-blogging/).
 
 Django Templates
 ----------------
