@@ -8,6 +8,9 @@ Lets say the current folder contains a bunch of html file, this utility runs a
 django server, and makes the files available through it. The html files can use
 django's powerful template inheritance.
 
+Read: [djanogthis for
+blogging]http://amitu.com/2013/09/djangothis-for-blogging/).
+
 Django Templates
 ----------------
 

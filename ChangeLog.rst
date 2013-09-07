@@ -1,6 +1,11 @@
 djangothis ChangeLog
 ====================
 
+todo
+----
+
+ * enable logging for debugging theme issues
+
 0.6 - 4-Sept-2013
 -----------------
 
