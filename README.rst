@@ -116,17 +116,16 @@ of _posts for example, generate appropriate summary and links, define views for
 post etc, which serve the page.
 
 My person website, `amitu.com <http://amitu.com>`_ is powered by this, which
-used to be jekyll powered. The source is available on
-`github.com/amitu/amitu.github.com
-<https://github.com/amitu/amitu.github.com/tree/djangothis>`_, take a look in
-`_theme <https://github.com/amitu/amitu.github.com/tree/djangothis/_theme>`_
-folder there, which is where all magic is.
+used to be jekyll powered. The source is available on `djangothis-jekyll
+<https://github.com/amitu/djangothis-jekyll>`_.
 
 Example site
 ------------
 
  * `amitu.com <http://amitu.com>`_, `source
    <https://github.com/amitu/amitu.github.com/tree/djangothis>`_.
+ * `html5 boilerplate for djangothis
+   <https://github.com/amitu/djangothis-html5-boilerplate>`.
 
 Installation and Usage
 ----------------------
