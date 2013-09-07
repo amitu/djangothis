@@ -125,7 +125,7 @@ Example site
  * `amitu.com <http://amitu.com>`_, `source
    <https://github.com/amitu/amitu.github.com/tree/djangothis>`_.
  * `html5 boilerplate for djangothis
-   <https://github.com/amitu/djangothis-html5-boilerplate>`.
+   <https://github.com/amitu/djangothis-html5-boilerplate>`_.
 
 Installation and Usage
 ----------------------
