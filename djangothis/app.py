@@ -1,17 +1,20 @@
-import os, sys, yaml, importlib
+import os, sys, yaml
 try:
     from yaml import CLoader as Loader
 except ImportError:
     from yaml import Loader
 
-__version__ = '0.6'
+__version__ = '0.8'
+
 
 class FakeModuleHack:
     def __init__(self, f):
         self.__file__ = f
 
+
 def watchfile(pth):
     sys.modules["djangothis::%s" % pth] = FakeModuleHack(pth)
+
 
 def read_yaml_file(pth):
     try:
@@ -19,14 +22,16 @@ def read_yaml_file(pth):
     except Exception:
         return {}
 
+
 def read_yaml(pth):
     try:
         return yaml.load(pth, Loader=Loader)
-    except Exception, e:
+    except Exception:
         return {}
 
 from path import path
 from importd import d
+
 
 def dotslash(pth):
     # TODO: support directory from command line?
@@ -50,10 +55,20 @@ defaults.update(read_yaml_file(dotslash("config.yaml")))
 
 d(**defaults)
 
-from django.template.loader import add_to_builtins
+try:
+    from django.template.base import add_to_builtins
+except ImportError:
+    from django.template.loader import add_to_builtins
+
 from django.core.management import get_commands
 
+try:
+    import importlib
+except ImportError:
+    from django.utils import importlib
+
 add_to_builtins("djangothis.templatetags.raw")
+
 
 def context(request):
     return {
@@ -81,14 +96,16 @@ watchfile(dotslash("ajax.yaml"))
 ttags = path(dotslash("templatetags"))
 if ttags.exists():
     for m in ttags.walkfiles():
-        if m.namebase.startswith("__"): continue
+        if m.namebase.startswith("__"):
+            continue
         if m.endswith(".py"):
             add_to_builtins("templatetags.%s" % m.namebase)
 
 cmds = path(dotslash("cmds"))
 if cmds.exists():
     for m in cmds.walkfiles():
-        if m.namebase.startswith("__"): continue
+        if m.namebase.startswith("__"):
+            continue
         if m.endswith(".py"):
             try:
                 cmd = importlib.import_module("cmds.%s" % m.namebase)
@@ -98,7 +115,7 @@ if cmds.exists():
                 sys.modules[
                     str("djangothis.management.commands.%s" % m.namebase)
                 ] = cmd
-                COMMANDS[m.namebase] = "djangothis" # i <3 magic!
+                COMMANDS[m.namebase] = "djangothis"  # i <3 magic!
 
 try:
     import _theme.views
@@ -117,14 +134,16 @@ else:
 theme_ttags = path(dotslash("_theme/templatetags"))
 if theme_ttags.exists():
     for m in theme_ttags.walkfiles():
-        if m.namebase.startswith("__"): continue
+        if m.namebase.startswith("__"):
+            continue
         if m.endswith(".py"):
             add_to_builtins("_theme.templatetags.%s" % m.namebase)
 
 theme_cmds = path(dotslash("_theme/cmds"))
 if theme_cmds.exists():
     for m in theme_cmds.walkfiles():
-        if m.namebase.startswith("__"): continue
+        if m.namebase.startswith("__"):
+            continue
         if m.endswith(".py"):
             try:
                 cmd = importlib.import_module("_theme.cmds.%s" % m.namebase)
@@ -134,10 +153,11 @@ if theme_cmds.exists():
                 sys.modules[
                     str("djangothis.management.commands.%s" % m.namebase)
                 ] = cmd
-                COMMANDS[m.namebase] = "djangothis" # i <3 magic!
+                COMMANDS[m.namebase] = "djangothis"  # i <3 magic!
 
 from django.contrib.staticfiles.views import serve
 from fhurl import JSONResponse
+
 
 @d(".*")
 def handle(request):
@@ -174,19 +194,6 @@ def handle(request):
 
     raise d.Http404("File not found.")
 
-# TODO?:
-#
-#   this is for prototype only
-#
-#   once prototype looks okay and user wants to "upgrade" to proper django
-#   project (importd based), for example to write custom models, user needs an
-#   app.py that will have all the features, but will allow user to add apps and
-#   change settings etc.
-#
-#   there should be a command djangothis --app[=app] that creates appropriate
-#   app.py in the current folder (if it does not exists, complains if it does)
-#
-#   Naah, don't think so.
 
 if __name__ == "__main__":
     d.main()

@@ -1,8 +1,10 @@
 from setuptools import setup
 import os, re, codecs
 
+
 def read(*parts):
     return codecs.open(os.path.join(os.path.dirname(__file__), *parts)).read()
+
 
 def find_version(*file_paths):
     version_file = read(*file_paths)

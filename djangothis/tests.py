@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.test.client import Client
 from django.test.utils import override_settings
 
+
 class BasicTest(TestCase):
     def setUp(self):
         self.c = Client()
@@ -40,4 +41,3 @@ class BasicTest(TestCase):
         resp = self.c.get("/idxw?asd=foo")
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.content, '{"afoo": 1}')
-
