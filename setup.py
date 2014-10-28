@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 import os, re, codecs
 
 
@@ -30,7 +30,7 @@ setup(
     license = 'BSD',
 
     install_requires = ["importd>=0.2.3", "PyYAML"],
-    packages = ["djangothis"],
+    packages = find_packages(),
 
     zip_safe = False,
     entry_points=dict(console_scripts=['djangothis=djangothis.app:d.main']),
