@@ -6,6 +6,12 @@ todo
 
  * enable logging for debugging theme issues
 
+0.7 - 7-Mar-2015
+----------------
+
+ * instead of catchall view, using middleware, so it works even if there is
+   another catchall view in project
+
 0.6 - 4-Sept-2013
 -----------------
 

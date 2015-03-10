@@ -49,6 +49,10 @@ defaults = dict(
         "django.contrib.auth.context_processors.auth",
         "djangothis.app.context",
     ],
+    SECRET_KEY=dotslash("secret.txt"),
+    MIDDLEWARE_CLASSES=[
+        "djangothis.app.Middleware",
+    ]
 )
 
 defaults.update(read_yaml_file(dotslash("config.yaml")))
@@ -159,40 +163,42 @@ from django.contrib.staticfiles.views import serve
 from fhurl import JSONResponse
 
 
-@d(".*")
-def handle(request):
-    path = request.path[1:]
+class Middleware(object):
+    def process_response(self, request, response):
+        if response is d.Http404:
+            return response
 
-    if path == "favicon.ico" or path.endswith(".png"):
-        return serve(request, path)
+        path = request.path[1:]
 
-    if path.startswith("static"):
-        return serve(request, request.path[len("/static/"):])
+        if path == "favicon.ico" or path.endswith(".png"):
+            return serve(request, path)
 
-    if path.startswith("theme"):
-        return serve(request, request.path[len("/theme/"):])
+        if path.startswith("theme"):
+            return serve(request, request.path[len("/theme/"):])
 
-    if path == "" or path.endswith("/"):
-        path = path + "index.html"
+        if path == "" or path.endswith("/"):
+            path = path + "index.html"
 
-    if os.path.exists(dotslash(path)) and os.path.isfile(dotslash(path)):
-        return path
+        if os.path.exists(dotslash(path)) and os.path.isfile(dotslash(path)):
+            return d.render_to_response(
+                path, {}, d.RequestContext(request)
+            )
 
-    ajax = read_yaml_file(dotslash("ajax.yaml"))
+        ajax = read_yaml_file(dotslash("ajax.yaml"))
 
-    if ajax:
-        if request.GET:
-            path = request.path + "?" + request.META["QUERY_STRING"]
-            # TODO: make it immune to order of GET params
-            if path in ajax:
-                return JSONResponse(ajax[path])
-        if request.path in ajax:
-            return JSONResponse(ajax[request.path])
+        if ajax:
+            if request.GET:
+                path = request.path + "?" + request.META["QUERY_STRING"]
+                # TODO: make it immune to order of GET params
+                if path in ajax:
+                    return JSONResponse(ajax[path])
+            if request.path in ajax:
+                return JSONResponse(ajax[request.path])
 
-    if not request.path.endswith("/"):
-        return d.HttpResponseRedirect(request.path + "/")
+        if not request.path.endswith("/"):
+            return d.HttpResponseRedirect(request.path + "/")
 
-    raise d.Http404("File not found.")
+        return response
 
 
 if __name__ == "__main__":
